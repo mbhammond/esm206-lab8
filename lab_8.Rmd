@@ -61,6 +61,7 @@ Explore the relationship (visual data exploration) between square footage and ho
 
 ```{r}
 ggplot(data = homes_sub, aes(x = SqFt, y = Price)) +
-  geom_point(aes(color = City, shape = Status))
+  geom_point() +   #aes(color = City, shape = Status)) +
+  geom_smooth(method = "lm")
 ```
 
