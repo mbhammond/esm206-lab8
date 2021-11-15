@@ -65,3 +65,76 @@ ggplot(data = homes_sub, aes(x = SqFt, y = Price)) +
   geom_smooth(method = "lm")
 ```
 
+## Model the relationship with home price as DV
+
+```{r}
+homes_lm1 <- lm(Price ~ City + Bedrooms + Bathrooms + SqFt + PricePerSqFt + Status, data = homes_sub)
+
+# Make a subset that only contains the quantitative variables
+
+homes_quant <- homes_sub %>% 
+  select(Price:PricePerSqFt)
+
+homes_cor <- cor(homes_quant)
+homes_cor
+
+corrplot(homes_cor, method = 'ellipse')
+
+# How would I explore diagnostic plots?
+plot(homes_lm1)
+```
+
+homes_lm1 is a crap model. 
+
+Try another model (homes_lm2) where we simplify this a bit:
+
+- City
+- SqFt
+- Status
+
+```{r}
+homes_lm2 <- lm(Price ~ City + SqFt + Status, data = homes_sub)
+
+homes_lm2
+
+homes_lm3 <- lm(Price ~ City + SqFt + Status + PricePerSqFt, data = homes_sub)
+
+plot(homes_lm2)
+
+# For homes_lm1, The R squared value is 0.8457. This means that 85% of the variance of the dependent variable is explained by the model. 85% of the variance in price is explained by the predictor variables within the model.
+
+```
+
+Find the AIC value of each model:
+
+```{r}
+AIC(homes_lm1)
+AIC(homes_lm2)
+AIC(homes_lm3)
+
+#Lower AIC value is better fit. 
+```
+
+Use `modelsummary` to show model outputs side-by-side:
+
+If you use modelsummary to return model utputs of multiple models, it wants you to feed it to it as a list.
+```{r}
+modelsummary(list(homes_lm1, homes_lm2, homes_lm3))
+```
+
+Take away: model selection is hard!!! It takes critical thought
+
+## Start naking predictions with this model
+
+Use `broom::augment()`
+
+```{r}
+homes_predicted <- augment(homes_lm1)
+```
+
+Use the `predict()` function to try out your model on new scenarios that you create.
+
+```{r}
+
+```
+
